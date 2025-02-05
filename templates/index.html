@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaveFrom Clone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #progress {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SaveFrom Clone</h1>
+    <input type="text" id="url" placeholder="Masukkan URL video...">
+    <button onclick="downloadVideo()">Unduh</button>
+    <div id="progress"></div>
+
+    <script>
+        async function downloadVideo() {
+            const url = document.getElementById("url").value;
+            if (!url) {
+                alert("Masukkan URL video!");
+                return;
+            }
+
+            const response = await fetch("/download", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url: url, format: "best" }),
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const filePath = data.file_path;
+            window.location.href = `/download_file/${encodeURIComponent(filePath)}`;
+        }
+    </script>
+</body>
+</html>
